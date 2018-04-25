@@ -9,8 +9,7 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
 RUN dpkg --add-architecture i386; apt-get update;apt-get install -y lib32gcc1 libstdc++6 libstdc++6:i386 libtbb2:i386 libtbb2 wget net-tools binutils apt-utils
 
-RUN mkdir /home/steam
-RUN adduser --home /home/steam steam
+RUN adduser --disabled-login --home /home/steam --quiet steam
 RUN chown steam -R /home/steam
 RUN mkdir /arma3
 RUN chown steam -R /arma3
@@ -23,7 +22,7 @@ RUN cd /home/steam
 WORKDIR /home/steam
 
 # Download and unpack SteamCMD
-RUN wget http://media.steampowered.com/installer/steamcmd_linux.tar.gz \
+RUN wget https://steamcdn-a.akamaihd.net/client/installer/steamcmd_linux.tar.gz \
 	&& tar -zxvf steamcmd_linux.tar.gz \
 	&& rm -f steamcmd_linux.tar.gz
 
@@ -43,4 +42,4 @@ EXPOSE 2306/udp
 WORKDIR /arma3
 
 STOPSIGNAL SIGINT
-CMD ["/arma3/arma3server", "-par=params", "-profiles=/profiles"]
+CMD ["/arma3/arma3server", "-par=params", "-profiles=/profiles", "-port=2302"]
