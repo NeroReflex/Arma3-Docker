@@ -1,5 +1,14 @@
 #!/bin/sh
 
+# Create the directory structure
+mkdir keys
+mkdir mods
+mkdir mpmissions
+mkdir server
+mkdir params
+mkdir profiles
+
+# Run the container in daemon mode
 docker run -d \
 	-v $PWD/keys:/arma3/keys \
 	-v $PWD/mods:/arma3/mods \
