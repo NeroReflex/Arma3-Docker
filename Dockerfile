@@ -17,7 +17,7 @@ ENV DEBIAN_FRONTEND noninteractive
 
 # Install required software
 RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
-RUN dpkg --add-architecture i386; apt-get update;apt-get install -y lib32gcc1 libstdc++6 libstdc++6:i386 libtbb2:i386 libtbb2 wget net-tools binutils apt-utils
+RUN dpkg --add-architecture i386; apt-get update;apt-get install -y lib32gcc1 libstdc++6 libstdc++6:i386 libtbb2:i386 libtbb2 wget net-tools binutils apt-utils nano
 
 # Create another user account to be used for tunning the server
 RUN adduser --disabled-login --home /home/steam --quiet steam
@@ -43,11 +43,17 @@ RUN ./steamcmd.sh +login $steam_username $steam_password +force_install_dir /arm
 #VOLUME /profiles
 #VOLUME /server
 
+# Create links for case-sensitive problems
 RUN ln -s /arma3/mpmissions /arma3/MPMissions
 RUN ln -s /arma3/keys /arma3/Keys
 
+# Create the logfile
+RUN touch /arma3/server_console.log
+
 WORKDIR /arma3
+
+COPY server.cfg /arma3/server.cfg
 
 # Run the server
 STOPSIGNAL SIGINT
-CMD ["/arma3/arma3server", "-par=params", "-profiles=/profiles", "-port=2302"]
+CMD ["/arma3/arma3server", "-par=params", "-profiles=/profiles", "-port=2302", "-config=/arma3/server.cfg"]
